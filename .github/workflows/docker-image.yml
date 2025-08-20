@@ -1,4 +1,4 @@
-name: Build docker-image
+name: Build docker-image-all
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by

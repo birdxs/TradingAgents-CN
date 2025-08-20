@@ -72,7 +72,7 @@ jobs:
               
               docker buildx create --use
               docker buildx build --platform linux/arm64 \
-                      -t birdxs/tradingAgents-cn-arm64:0.1.3 \
+                      -t birdxs/tradingagents-cn-arm64:0.1.3 \
                       --push \
                       -f ./Dockerfile .
 
@@ -81,6 +81,6 @@ jobs:
               
               docker buildx create --use
               docker buildx build --platform linux/amd64 \
-                      -t birdxs/tradingAgents-cn-amd64:0.1.3 \
+                      -t birdxs/tradingagents-cn-amd64:0.1.3 \
                       --push \
                       -f ./Dockerfile .

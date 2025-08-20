@@ -75,3 +75,12 @@ jobs:
                       -t birdxs/tradingAgents-cn-arm64:0.1.3 \
                       --push \
                       -f ./Dockerfile .
+
+      - name: Build and push Docker image
+        run: |
+              
+              docker buildx create --use
+              docker buildx build --platform linux/amd64 \
+                      -t birdxs/tradingAgents-cn-amd64:0.1.3 \
+                      --push \
+                      -f ./Dockerfile .

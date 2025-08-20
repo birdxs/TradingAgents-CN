@@ -75,7 +75,7 @@ jobs:
           context: .
           file: Dockerfile
           build-args: |
-            BAIDUWP_VERSION=${{ steps.tradingagents-cn_version.outputs.VERSION }}
+            TRADINGAGENTS_VERSION=${{ steps.tradingagents-cn_version.outputs.VERSION }}
             #DOCKER_GEN_VERSION=${{ steps.docker-gen_version.outputs.VERSION }}          
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true

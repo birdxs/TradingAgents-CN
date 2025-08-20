@@ -54,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: birdxs/tradingAgents-cn 
+          images: birdxs/tradingagents-cn 
 
       - name: Docker Setup QEMU
         # You may pin to the exact commit or the version.

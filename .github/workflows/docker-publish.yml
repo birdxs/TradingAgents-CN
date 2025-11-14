@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag version'
+        required: true
 
 jobs:
   build-and-push:

@@ -2917,6 +2917,8 @@ class ConfigService:
             # 🆕 聚合渠道
             "302ai": "AI302_API_KEY",
             "aihubmix": "AIHUBMIX_API_KEY",
+            "volcengine": "VOLCENGINE_API_KEY",
+            "volcengine_coding": "VOLCENGINE_CODING_API_KEY",
             "oneapi": "ONEAPI_API_KEY",
             "newapi": "NEWAPI_API_KEY",
             "custom_aggregator": "CUSTOM_AGGREGATOR_API_KEY"
@@ -3373,27 +3375,23 @@ class ConfigService:
         import asyncio
 
         try:
+            db = await self._get_db()
+            providers_collection = db.llm_providers
+            provider_data = await providers_collection.find_one({"name": provider_name})
+            base_url = provider_data.get("default_base_url") if provider_data else None
+            test_model = provider_data.get("test_model") if provider_data else None
+
             # 聚合渠道（使用 OpenAI 兼容 API）
-            if provider_name in ["302ai", "aihubmix", "oneapi", "newapi", "custom_aggregator"]:
-                # 获取厂家的 base_url
-                db = await self._get_db()
-                providers_collection = db.llm_providers
-                provider_data = await providers_collection.find_one({"name": provider_name})
-                base_url = provider_data.get("default_base_url") if provider_data else None
+            if provider_name in ["302ai", "aihubmix", "volcengine", "volcengine_coding", "oneapi", "newapi", "custom_aggregator"]:
                 return await asyncio.get_event_loop().run_in_executor(
-                    None, self._test_openai_compatible_api, api_key, display_name, base_url, provider_name
+                    None, self._test_openai_compatible_api, api_key, display_name, base_url, provider_name, test_model
                 )
             elif provider_name == "google":
-                # 获取厂家的 base_url
-                db = await self._get_db()
-                providers_collection = db.llm_providers
-                provider_data = await providers_collection.find_one({"name": provider_name})
-                base_url = provider_data.get("default_base_url") if provider_data else None
-                return await asyncio.get_event_loop().run_in_executor(None, self._test_google_api, api_key, display_name, base_url)
+                return await asyncio.get_event_loop().run_in_executor(None, self._test_google_api, api_key, display_name, base_url, test_model)
             elif provider_name == "deepseek":
-                return await asyncio.get_event_loop().run_in_executor(None, self._test_deepseek_api, api_key, display_name)
+                return await asyncio.get_event_loop().run_in_executor(None, self._test_deepseek_api, api_key, display_name, test_model)
             elif provider_name == "dashscope":
-                return await asyncio.get_event_loop().run_in_executor(None, self._test_dashscope_api, api_key, display_name)
+                return await asyncio.get_event_loop().run_in_executor(None, self._test_dashscope_api, api_key, display_name, test_model)
             elif provider_name == "openrouter":
                 return await asyncio.get_event_loop().run_in_executor(None, self._test_openrouter_api, api_key, display_name)
             elif provider_name == "openai":
@@ -3405,11 +3403,6 @@ class ConfigService:
             else:
                 # 🔧 对于未知的自定义厂家，使用 OpenAI 兼容 API 测试
                 logger.info(f"🔍 使用 OpenAI 兼容 API 测试自定义厂家: {provider_name}")
-                # 获取厂家的 base_url
-                db = await self._get_db()
-                providers_collection = db.llm_providers
-                provider_data = await providers_collection.find_one({"name": provider_name})
-                base_url = provider_data.get("default_base_url") if provider_data else None
 
                 if not base_url:
                     return {
@@ -3418,7 +3411,7 @@ class ConfigService:
                     }
 
                 return await asyncio.get_event_loop().run_in_executor(
-                    None, self._test_openai_compatible_api, api_key, display_name, base_url, provider_name
+                    None, self._test_openai_compatible_api, api_key, display_name, base_url, provider_name, test_model
                 )
         except Exception as e:
             return {
@@ -4035,7 +4028,7 @@ class ConfigService:
                 )
                 # 调用 OpenAI 兼容的 /v1/models 端点
                 result = await asyncio.get_event_loop().run_in_executor(
-                    None, self._fetch_models_from_api, api_key, base_url, display_name
+                    None, self._fetch_models_from_api, api_key, base_url, display_name, provider_name
                 )
 
             logger.info(
@@ -4060,7 +4053,7 @@ class ConfigService:
         base_url_lower = str(base_url or "").lower()
         return normalized_name == "aihubmix" or "aihubmix.com" in base_url_lower or "api.aihubmix.com" in base_url_lower
 
-    def _fetch_models_from_api(self, api_key: str, base_url: str, display_name: str) -> dict:
+    def _fetch_models_from_api(self, api_key: str, base_url: str, display_name: str, provider_name: str | None = None) -> dict:
         """从 API 获取模型列表"""
         try:
             import requests
@@ -4114,7 +4107,7 @@ class ConfigService:
                             print(f"   - {m.get('id')}")
 
                     # 过滤：只保留主流大厂的常用模型
-                    filtered_models = self._filter_popular_models(all_models)
+                    filtered_models = self._filter_popular_models(all_models, provider_name)
                     print(f"✅ 过滤后保留 {len(filtered_models)} 个常用模型")
 
                     # 转换模型格式，包含价格信息
@@ -4502,11 +4495,47 @@ class ConfigService:
             if input_price_per_1k or output_price_per_1k:
                 print(f"💰 {model_id}: 输入=${input_price_per_1k:.6f}/1K, 输出=${output_price_per_1k:.6f}/1K")
 
+        # 排序：火山方舟模型按ID倒序（最新的放最上面），其他保持原样
+        if formatted:
+            # 检查是否有火山方舟模型（doubao- 或 ep- 开头）
+            has_volcengine_models = any(m["id"].startswith("doubao-") or m["id"].startswith("ep-") for m in formatted)
+            if has_volcengine_models:
+                formatted.sort(key=lambda x: x["id"], reverse=True)
+                print(f"✅ 已按ID倒序排序火山方舟模型")
+
         return formatted
 
-    def _filter_popular_models(self, models: list) -> list:
+    def _filter_popular_models(self, models: list, provider_name: str | None = None) -> list:
         """过滤模型列表，只保留主流大厂的常用模型"""
         import re
+
+        # 火山方舟编程计划白名单
+        coding_plan_whitelist = [
+            "doubao-seed-2.0",
+            "doubao-seed-code",
+            "glm-5.2",
+            "kimi-k2.7-code",
+            "deepseek-v4",
+            "minimax-m3",
+            "minimax-m2.7",
+            "kimi-k2.6",
+        ]
+
+        # 如果是火山方舟编程厂家，只返回白名单里的，排除2.1版本
+        if provider_name == "volcengine_coding":
+            filtered_coding = []
+            for model in models:
+                model_id = model.get("id", "").lower()
+                # 排除2.1版本的模型
+                if "doubao-seed-2.1" in model_id:
+                    continue
+                # 检查是否包含白名单里的关键词
+                match = any(whitelist in model_id for whitelist in coding_plan_whitelist)
+                if match:
+                    print(f"✅ [火山方舟编程] 保留模型: {model_id}")
+                    filtered_coding.append(model)
+            print(f"✅ [火山方舟编程] 白名单过滤后保留 {len(filtered_coding)} 个")
+            return filtered_coding
 
         # 只保留三大厂：OpenAI、Anthropic、Google
         popular_providers = [
@@ -4522,6 +4551,8 @@ class ConfigService:
             "claude-": "anthropic",     # claude-3-opus, claude-3-sonnet
             "gemini-": "google",        # gemini-pro, gemini-1.5-pro
             "gemini": "google",         # gemini (不带连字符)
+            "doubao-": "volcengine",    # doubao-seed-xxx, doubao-seedance-xxx
+            "ep-": "volcengine",        # 火山方舟接入点ID，如 ep-202xxxxxx
         }
 
         # 排除的关键词
@@ -4580,7 +4611,7 @@ class ConfigService:
 
         return filtered
 
-    def _test_openai_compatible_api(self, api_key: str, display_name: str, base_url: str = None, provider_name: str = None) -> dict:
+    def _test_openai_compatible_api(self, api_key: str, display_name: str, base_url: str = None, provider_name: str = None, test_model: str = None) -> dict:
         """测试 OpenAI 兼容 API（用于聚合渠道和自定义厂家）"""
         try:
             import requests
@@ -4615,16 +4646,18 @@ class ConfigService:
                 "Authorization": f"Bearer {api_key}"
             }
 
-            # 🔥 根据不同厂家选择合适的测试模型
-            test_model = "gpt-3.5-turbo"  # 默认模型
-            if provider_name == "siliconflow":
-                # 硅基流动使用免费的 Qwen 模型进行测试
+            # 🔥 测试模型优先级：传入的配置 > 厂家预设特殊值 > 默认 gpt-3.5-turbo
+            if test_model:
+                logger.info(f"🔍 使用配置的测试模型: {test_model}")
+            elif provider_name == "siliconflow":
                 test_model = "Qwen/Qwen2.5-7B-Instruct"
                 logger.info(f"🔍 硅基流动使用测试模型: {test_model}")
             elif provider_name == "zhipu":
-                # 智谱AI使用 glm-4 模型进行测试
                 test_model = "glm-4"
                 logger.info(f"🔍 智谱AI使用测试模型: {test_model}")
+            else:
+                test_model = "gpt-3.5-turbo"
+                logger.info(f"🔍 使用默认测试模型: {test_model}")
 
             # 使用一个通用的模型名称进行测试
             # 聚合渠道通常支持多种模型，这里使用 gpt-3.5-turbo 作为测试
@@ -4636,8 +4669,11 @@ class ConfigService:
                 "max_tokens": 200,  # 增加到200，给推理模型（如o1/gpt-5）足够空间
                 "temperature": 0.1
             }
+            logger.info(f"🔍 [测试API] 完整请求体: model={test_model}, max_tokens=200, temperature=0.1")
+            logger.info(f"🔍 [测试API] 请求 Headers: Content-Type={headers.get('Content-Type')}, Auth=Bearer...{api_key[-8:] if api_key and len(api_key)>8 else 'EMPTY'}")
 
             response = requests.post(url, json=data, headers=headers, timeout=15)
+            logger.info(f"🔍 [测试API] 响应状态码: {response.status_code}")
 
             if response.status_code == 200:
                 result = response.json()

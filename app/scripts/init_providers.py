@@ -34,6 +34,7 @@ async def init_providers():
             "api_doc_url": "https://platform.openai.com/docs",
             "default_base_url": "https://api.openai.com/v1",
             "is_active": True,
+            "test_model": "gpt-3.5-turbo",
             "supported_features": ["chat", "completion", "embedding", "image", "vision", "function_calling", "streaming"]
         },
         {
@@ -44,6 +45,7 @@ async def init_providers():
             "api_doc_url": "https://docs.anthropic.com",
             "default_base_url": "https://api.anthropic.com",
             "is_active": True,
+            "test_model": "claude-3-haiku-20240307",
             "supported_features": ["chat", "completion", "function_calling", "streaming"]
         },
         {
@@ -54,6 +56,7 @@ async def init_providers():
             "api_doc_url": "https://ai.google.dev/docs",
             "default_base_url": "https://generativelanguage.googleapis.com/v1beta",
             "is_active": True,
+            "test_model": "gemini-2.0-flash-exp",
             "supported_features": ["chat", "completion", "embedding", "vision", "function_calling", "streaming"]
         },
         {
@@ -65,6 +68,7 @@ async def init_providers():
             "default_base_url": "https://open.bigmodel.cn/api/paas/v4",
             "aliases": canonical_aliases("glm"),
             "is_active": True,
+            "test_model": "glm-4",
             "supported_features": ["chat", "completion", "embedding", "function_calling", "streaming"]
         },
         {
@@ -75,6 +79,7 @@ async def init_providers():
             "api_doc_url": "https://platform.deepseek.com/api-docs",
             "default_base_url": "https://api.deepseek.com",
             "is_active": True,
+            "test_model": "deepseek-chat",
             "supported_features": ["chat", "completion", "function_calling", "streaming"]
         },
         {
@@ -86,6 +91,7 @@ async def init_providers():
             "default_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
             "aliases": canonical_aliases("qwen"),
             "is_active": True,
+            "test_model": "qwen-turbo",
             "supported_features": ["chat", "completion", "embedding", "function_calling", "streaming"]
         },
         {
@@ -96,6 +102,7 @@ async def init_providers():
             "api_doc_url": "https://docs.siliconflow.cn",
             "default_base_url": "https://api.siliconflow.cn/v1",
             "is_active": True,
+            "test_model": "Qwen/Qwen2.5-7B-Instruct",
             "supported_features": ["chat", "completion", "embedding", "function_calling", "streaming"]
         },
         {
@@ -106,6 +113,7 @@ async def init_providers():
             "api_doc_url": "https://doc.302.ai",
             "default_base_url": "https://api.302.ai/v1",
             "is_active": True,
+            "test_model": "gpt-3.5-turbo",
             "supported_features": ["chat", "completion", "embedding", "image", "vision", "function_calling", "streaming"]
         },
         {
@@ -116,7 +124,32 @@ async def init_providers():
             "api_doc_url": "https://docs.aihubmix.com/cn/quick-start",
             "default_base_url": "https://aihubmix.com/v1",
             "is_active": True,
+            "test_model": "gpt-3.5-turbo",
             "supported_features": ["chat", "completion", "embedding", "vision", "function_calling", "streaming"]
+        },
+        {
+            "name": "volcengine",
+            "display_name": "火山方舟",
+            "description": "火山方舟 Agent Plan 模型订阅套餐集成了包含 Doubao-Seed、Doubao-Seedance、Doubao-Seedream 等在内的字节跳动自研 SOTA 级模型，覆盖文本、代码、图像、视频等多模态任务。最新支持 MiniMax-M3、DeepSeek-V4 系列、GLM-5.2、Doubao-Seed-2.0 系列、Kimi-K2.7 等模型，工具不限。超全模态模型与 Harness 升级一步到位，深度支持 Agent 框架与 AI 编程工具。一次订阅，可以为不同任务切换合适的 AI 引擎。",
+            "website": "https://www.volcengine.com/solutions/ark",
+            "api_doc_url": "https://ark.volcengine.com/docs",
+            "default_base_url": "https://ark.cn-beijing.volces.com/api/v3",
+            "is_active": True,
+            "test_model": "Doubao-Seed-2.1-turbo",
+            "supported_features": ["chat", "completion", "embedding", "image", "vision", "function_calling", "streaming"],
+            "default_embedding_model": "doubao-seed-evolving"
+        },
+        {
+            "name": "volcengine_coding",
+            "display_name": "火山方舟编程",
+            "description": "火山方舟 Coding Plan 是为开发者量身定制的 AI 编程订阅服务，支持 Doubao-Seed-Code、DeepSeek-V4 系列、GLM-5.2、Kimi-K2.7 等主流编程模型按需切换。兼容 Claude Code、Cursor、Cline、OpenCode、TRAE 等主流编程工具，套餐额度共享。提供 Lite（40元/月）和 Pro（200元/月）两档套餐，适配不同开发强度。注意：Coding Plan 仅限 AI 编程工具使用，Base URL 与 Agent Plan 不同。",
+            "website": "https://www.volcengine.com/activity/codingplan",
+            "api_doc_url": "https://www.volcengine.com/docs/82379/1925114",
+            "default_base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+            "is_active": True,
+            "test_model": "doubao-seed-2.0-code",
+            "supported_features": ["chat", "completion", "embedding", "function_calling", "streaming"],
+            "default_embedding_model": "doubao-embedding-vision"
         }
     ]
     

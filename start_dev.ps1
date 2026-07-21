@@ -197,7 +197,7 @@ try {
         foreach ($job in $jobs) {
             $output = Receive-Job -Job $job -ErrorAction SilentlyContinue
             if ($output) {
-                Write-Host $output
+                foreach ($line in $output) { Write-Host $line }
             }
             
             # Check if job failed

@@ -1,0 +1,9 @@
+﻿{
+    "build_type":  "installer",
+    "version":  "2.0.1",
+    "build_timestamp":  "20260313-154648",
+    "build_date":  "2026-03-13T07:46:48Z",
+    "build_unix":  1773416809,
+    "git_commit":  "06e49c5a",
+    "full_version":  "2.0.1-build20260313-154648"
+}

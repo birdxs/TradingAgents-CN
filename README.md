@@ -299,19 +299,16 @@
 - **持续改进**: 不断完善中文增强版本，提供更好的用户体验
 - **开放合作**: 欢迎与源项目团队和全球开发者进行技术交流与合作
 
-## [推荐：火山方舟大模型平台](https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN)
+## 🙏 感谢赞助
 
-<a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN" target="_blank" rel="noopener noreferrer">
-  <img src="assets/volcengine-logo.png" alt="火山方舟" width="220"/>
-</a>
-
-火山方舟 Agent Plan 模型订阅套餐集成了包含 Doubao-Seed、Doubao-Seedance、Doubao-Seedream 等在内的字节跳动自研 SOTA 级模型，覆盖文本、代码、图像、视频等多模态任务。最新支持 MiniMax-M3、DeepSeek-V4 系列、GLM-5.2、Doubao-Seed-2.0 系列、Kimi-K2.7 等模型，工具不限。一次订阅，可以为不同任务切换合适的 AI 引擎。
-
-## [感谢AIHubmix赞助](https://aihubmix.com/?aff=2rIi)
-
-<a href="https://aihubmix.com/?aff=2rIi" target="_blank" rel="noopener noreferrer">
-  <img src="assets/AIHubmixlogo.png" alt="AIHubMix" width="220"/>
-</a>
+<table>
+    <tr>
+        <td width="180"><a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN"><img src="assets/huoshan.png" alt="火山引擎" width="150"></a></td>
+        <td>感谢<a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN">字节火山引擎</a>赞助本项目！<br>
+【专属活动优惠】19元Tokens包！享字节自研豆包模型+满血版开源 SOTA模型，覆盖文本、VLM、图像生成，全模态一站配齐：Seed-2.1、Seedream-5.0、GLM-5.2、DeepSeek、Qwen等。不止编程、更能解决 Agent 复杂长程任务 → 注册即领2500万Tokens，立即前往<br>
+👉 <a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN">点击链接抢购</a></td>
+    </tr>
+</table>
 
 ## 📈 版本历史
 

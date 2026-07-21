@@ -4010,6 +4010,16 @@ class ConfigService:
             else:
                 logger.info(f"✅ [fetch_provider_models] 使用数据库配置的 {display_name} API密钥")
 
+            # 火山方舟编程版：直接返回硬编码模型列表，不从API获取
+            if normalized_provider_name == "volcengine_coding":
+                logger.info("🧭 [fetch_provider_models] branch=volcengine_coding (hardcoded)")
+                models = self._get_volcengine_coding_models()
+                return {
+                    "success": True,
+                    "message": f"成功获取 {len(models)} 个模型",
+                    "models": models
+                }
+
             if not base_url:
                 return {
                     "success": False,
@@ -4047,6 +4057,67 @@ class ConfigService:
                 "success": False,
                 "message": f"获取模型列表失败: {str(e)}"
             }
+
+    def _get_volcengine_coding_models(self) -> list[dict]:
+        """返回火山方舟编程版硬编码模型列表"""
+        models = [
+            {
+                "id": "doubao-seed-2.0-code",
+                "display_name": "Doubao-Seed-2.0-Code",
+                "description": "依托 Seed 2.0 Agent 与 VLM 能力，强化代码能力：前端出众，多语言适配，适合接入各类 AI 编程工具。默认non-thinking，支持开启深度思考。",
+            },
+            {
+                "id": "doubao-seed-2.0-pro",
+                "display_name": "Doubao-Seed-2.0-pro",
+                "description": "旗舰级全能通用模型，适合复杂推理与长链路任务执行场景，强调多模态理解、长上下文推理、结构化生成与工具增强执行。默认-thinking，支持关闭深度思考。",
+            },
+            {
+                "id": "doubao-seed-2.0-lite",
+                "display_name": "Doubao-Seed-2.0-lite",
+                "description": "兼顾生成质量与响应速度，适合作为通用生产级模型，胜任非结构化信息处理、内容创作、搜索推荐、数据分析等生产型工作。默认-thinking，支持关闭深度思考。",
+            },
+            {
+                "id": "doubao-seed-code",
+                "display_name": "Doubao-Seed-Code",
+                "description": "豆包编程模型，面向Agentic编程任务进行了深度优化，具备精准的代码生成、任务调度与逻辑协同能力。默认non-thinking，支持开启深度思考。",
+            },
+            {
+                "id": "glm-5.2",
+                "display_name": "GLM-5.2",
+                "description": "【当前火爆中，如遇卡顿建议切换其他模型】智谱最新旗舰模型，支持 1M 上下文窗口，长程任务效果表现突出，多项权威评测榜单成绩稳居前列。可将 model name 替换为 glm-latest ，以访问最新版本模型。",
+            },
+            {
+                "id": "kimi-k2.7-code",
+                "display_name": "Kimi-K2.7-Code",
+                "description": "【尝鲜版】Kimi 最新 Coding 模型，在长上下文中更可靠地遵循指令，能以更高的成功率完成编程任务，同时支持文本、图片与视频输入，思考模式，对话与 Agent 任务。",
+            },
+            {
+                "id": "minimax-m3",
+                "display_name": "MiniMax-M3",
+                "description": "新一代 M 系列语言模型，在编码与智能体评测中达到行业顶尖水平，适用于 Agent 推理、工具调用、代码和长上下文任务",
+            },
+            {
+                "id": "deepseek-v4-flash",
+                "display_name": "DeepSeek-V4-Flash",
+                "description": "【超低抵扣系数】DeepSeek-V4-Flash，能够提供更加快捷、经济的 API 服务。默认开启深度思考(thinking)，支持手动关闭",
+            },
+            {
+                "id": "deepseek-v4-pro",
+                "display_name": "DeepSeek-V4-Pro",
+                "description": "【模型抵扣系数较高，推荐用于复杂问题，或关闭深度思考】DeepSeek-V4-Pro，Agent 能力显著增强，具备丰富的世界知识。默认开启深度思考(thinking)，支持手动关闭",
+            },
+            {
+                "id": "minimax-m2.7",
+                "display_name": "MiniMax-M2.7",
+                "description": "M2.7 能够自行构建复杂 Agent Harness，并基于 Agent Teams、复杂 Skills、Tool 等能力，完成高度复杂的生产力任务。默认-thinking，支持关闭深度思考。",
+            },
+            {
+                "id": "kimi-k2.6",
+                "display_name": "Kimi-K2.6",
+                "description": "【模型抵扣系数较高，推荐用于复杂问题，或关闭深度思考】月之暗面新一代智能模型，默认-thinking，支持关闭深度思考。",
+            },
+        ]
+        return models
 
     def _is_aihubmix_provider(self, provider_name: str | None, base_url: str | None) -> bool:
         normalized_name = normalize_provider_key(provider_name)

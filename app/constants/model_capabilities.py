@@ -429,7 +429,7 @@ AGGREGATOR_PROVIDERS = {
     "volcengine_coding": {
         "display_name": "火山方舟编程",
         "description": "火山方舟 Coding Plan 是为开发者量身定制的 AI 编程订阅服务，支持 Doubao-Seed-Code、DeepSeek-V4 系列、GLM-5.2、Kimi-K2.7 等主流编程模型按需切换。兼容 Claude Code、Cursor、Cline、OpenCode、TRAE 等主流编程工具，套餐额度共享。提供 Lite（40元/月）和 Pro（200元/月）两档套餐。注意：Coding Plan 仅限 AI 编程工具使用，Base URL 与 Agent Plan 不同。",
-        "website": "https://www.volcengine.com/activity/codingplan",
+        "website": "https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=TradingAgents-CN",
         "api_doc_url": "https://www.volcengine.com/docs/82379/1925114",
         "default_base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
         "model_name_format": "{model}",

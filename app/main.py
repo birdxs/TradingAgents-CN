@@ -237,6 +237,20 @@ async def lifespan(app: FastAPI):
         logger.warning(f"⚠️  配置桥接失败: {e}")
         logger.warning("⚠️  TradingAgents 将使用 .env 文件中的配置")
 
+    # 🔥 自动创建默认管理员用户（如果不存在）
+    try:
+        from app.services.user_service import UserService
+        user_svc = UserService()
+        existing_admin = user_svc.users_collection.find_one({"username": "admin"})
+        if not existing_admin:
+            await user_svc.create_admin_user(username="admin", password="admin123")
+            logger.info("✅ 默认管理员用户已自动创建: admin / admin123")
+            logger.info("⚠️  请在首次登录后立即修改密码！")
+        else:
+            logger.info("ℹ️  管理员用户已存在，跳过自动创建")
+    except Exception as e:
+        logger.warning(f"⚠️  自动创建管理员用户失败: {e}")
+
     # Apply dynamic settings (log_level, enable_monitoring) from ConfigProvider
     try:
         from app.services.config_provider import provider as config_provider  # local import to avoid early DB init issues
